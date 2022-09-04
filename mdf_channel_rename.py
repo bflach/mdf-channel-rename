@@ -65,7 +65,7 @@ def join_channel_name_sources(path_list):
 
 
 if __name__ == '__main__':
-    option_dict = {'new_fname_ext': 'renamed'}
+    option_dict = {'new_fname_ext': '_renamed'}
     # Parse input arguments
     data_path_list, channel_name_path_list, option_dict_from_arg = parse_argv(sys.argv)
     option_dict.update(option_dict_from_arg)
