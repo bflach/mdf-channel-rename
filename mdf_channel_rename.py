@@ -1,6 +1,9 @@
 """
     This module will replace the channel names in _mdf_ files base on replacement dictionaries defined
     in csv (';') formats.
+    - Multiple files could be to the argument list. 
+    - The input dictionaries will be merged, 
+    - input data files will be processed one-by-one.
 """
 
 import sys
