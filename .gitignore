@@ -27,3 +27,5 @@
 *.txt
 !requirements.txt
 *.csv
+*.log
+
