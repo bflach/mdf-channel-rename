@@ -19,5 +19,6 @@
 *.mf4
 *.dat
 *.txt
+!requirements.txt
 *.csv
 *.spec
