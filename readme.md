@@ -5,7 +5,7 @@ Run the ```prepare_env.ps1``` or follow the steps in the file to prepare the vir
 
 ## Create executable file from the project
 
-Run ```create_installer.ps1``` of follow the steps in the file to prepare the executable.
+Run ```create_exe.ps1``` of follow the steps in the file to prepare the executable.
 
 # Usage
 
