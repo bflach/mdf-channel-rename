@@ -15,6 +15,25 @@ from asammdf import MDF
 import pandas as pd
 from tqdm import tqdm
 
+from tqdm.contrib.logging import logging_redirect_tqdm
+
+# Set up logger handlers
+logFormatter = logging.Formatter(fmt=' %(asctime)s :: %(levelname)-8s :: %(message)s')
+rootLogger = logging.getLogger()
+
+Path("./log").mkdir(parents=True, exist_ok=True)
+fileHandler = logging.FileHandler(f'log/{Path(__file__).stem}_{time.strftime("%Y%m%d-%H%M%S")}.log')
+fileHandler.setLevel(logging.INFO)
+fileHandler.setFormatter(logFormatter)
+rootLogger.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setLevel(logging.INFO)
+consoleHandler.setFormatter(logFormatter)
+rootLogger.addHandler(consoleHandler)
+
+rootLogger.setLevel(logging.INFO)
+
 
 def parse_argv(argv):
     """
@@ -67,9 +86,6 @@ def join_channel_name_sources(path_list):
 
 
 if __name__ == '__main__':
-    # Set logger
-    LOG = logging.getLogger('console')
-    logging.basicConfig(filename=f'{Path(__file__).stem}_{time.strftime("%Y%m%d-%H%M%S")}.log', level=logging.INFO)
 
     option_dict = {'new_fname_ext': '_renamed'}
 
@@ -81,24 +97,24 @@ if __name__ == '__main__':
     channel_name_dict = join_channel_name_sources(channel_name_path_list)
 
     # Replace channel names in mdf files
-    for mdf_path in tqdm(data_path_list):
-        try:
-            with MDF(mdf_path) as mdf:
-                LOG.info(f'File opened: {mdf_path.name}')
-                tqdm.write(f'File opened: {mdf_path.name}')
+    with logging_redirect_tqdm():
+        for mdf_path in tqdm(data_path_list):
+            try:
+                mdf_path.resolve(strict=True)
+            except FileNotFoundError:
+                rootLogger.warning(f'File not found: {mdf_path}')
+            else:
+                with MDF(mdf_path) as mdf:
+                    rootLogger.info(f'File opened: {mdf_path.name}')
 
-                for group in mdf.groups:
-                    for channel in group.channels:
-                        if channel.name in channel_name_dict.keys():
-                            LOG.info(f'Channel name changes: {channel.name} -> {channel_name_dict[channel.name]} ')
-                            tqdm.write(f'Channel name changes: {channel.name} -> {channel_name_dict[channel.name]} ')
+                    for group in mdf.groups:
+                        for channel in group.channels:
+                            if channel.name in channel_name_dict.keys():
+                                rootLogger.info(
+                                    f'Channel name changes: {channel.name} -> {channel_name_dict[channel.name]} ')
+                                channel.name = channel_name_dict[channel.name]
 
-                            channel.name = channel_name_dict[channel.name]
-
-                mdf.save(mdf_path.stem + option_dict['new_fname_ext'] + mdf_path.suffix, compression=2)
-
-        except FileNotFoundError:
-            print(f"File not found: {mdf_path}")
+                    mdf.save(mdf_path.stem + option_dict['new_fname_ext'] + mdf_path.suffix, compression=2)
 
     input('Press any key to end program...')
     print('Bye, have a beautiful time!')
