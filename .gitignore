@@ -16,8 +16,8 @@
 /dist/
 /build/
 \build\
-.mf4
-.dat
-.txt
-.csv
-.spec
+*.mf4
+*.dat
+*.txt
+*.csv
+*.spec
