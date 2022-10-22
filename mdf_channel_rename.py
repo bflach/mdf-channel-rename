@@ -5,16 +5,12 @@
     - The input dictionaries will be merged, 
     - input data files will be processed one-by-one.
 """
-
+import warningfilter
 import sys
 from pathlib import Path
 from asammdf import MDF
 import pandas as pd
 from tqdm import tqdm
-
-import warnings
-
-warnings.filterwarnings("ignore")
 
 
 def parse_argv(argv):
