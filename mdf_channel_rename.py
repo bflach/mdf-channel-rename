@@ -5,6 +5,9 @@
     - The input dictionaries will be merged, 
     - input data files will be processed one-by-one.
 """
+import logging
+import time
+
 import warningfilter
 import sys
 from pathlib import Path
@@ -64,10 +67,16 @@ def join_channel_name_sources(path_list):
 
 
 if __name__ == '__main__':
+    # Set logger
+    LOG = logging.getLogger('console')
+    logging.basicConfig(filename=f'{Path(__file__).stem}_{time.strftime("%Y%m%d-%H%M%S")}.log', level=logging.INFO)
+
     option_dict = {'new_fname_ext': '_renamed'}
+
     # Parse input arguments
     data_path_list, channel_name_path_list, option_dict_from_arg = parse_argv(sys.argv)
     option_dict.update(option_dict_from_arg)
+
     # Join channel name dictionaries
     channel_name_dict = join_channel_name_sources(channel_name_path_list)
 
@@ -75,11 +84,21 @@ if __name__ == '__main__':
     for mdf_path in tqdm(data_path_list):
         try:
             with MDF(mdf_path) as mdf:
+                LOG.info(f'File opened: {mdf_path.name}')
+                tqdm.write(f'File opened: {mdf_path.name}')
+
                 for group in mdf.groups:
                     for channel in group.channels:
                         if channel.name in channel_name_dict.keys():
+                            LOG.info(f'Channel name changes: {channel.name} -> {channel_name_dict[channel.name]} ')
+                            tqdm.write(f'Channel name changes: {channel.name} -> {channel_name_dict[channel.name]} ')
+
                             channel.name = channel_name_dict[channel.name]
+
                 mdf.save(mdf_path.stem + option_dict['new_fname_ext'] + mdf_path.suffix, compression=2)
 
         except FileNotFoundError:
             print(f"File not found: {mdf_path}")
+
+    input('Press any key to end program...')
+    print('Bye, have a beautiful time!')
