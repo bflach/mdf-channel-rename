@@ -16,9 +16,14 @@
 /dist/
 /build/
 \build\
+*.spec
+
+# Temporary files
+/__pycache__/
+
+# Test files
 *.mf4
 *.dat
 *.txt
 !requirements.txt
 *.csv
-*.spec
