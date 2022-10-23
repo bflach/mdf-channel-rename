@@ -19,8 +19,15 @@ Run ```create_exe.ps1``` of follow the steps in the file to prepare the executab
 		1. the following file extensions are allowed: '.mf4', '.dat'
 	1. use the the following key to determine the file name extension of the ```new_fname_ext=_renamed```
 		1. the default is '_renamed'
+
 1. After successful environment installation, you can run it as a python script:
+	
 	e.g. ```python.exe .\mdf_channel_rename.py .\test.mf4 .\channel_name_list.csv  new_fname_ext=_renamed```
+
 2. You can do the same wih the binary version:
+	
 	e.g. ```.\mdf-channel-rename_3b71fc9.exe .\test.mf4 .\channel_name_list.csv```
+
 3. ... or you can just drag the input files and drop it on the executable version.
+
+![usage-example-gif](./use-eg-drag-and-drop_240x135.gif)
